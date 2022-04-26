@@ -16,22 +16,22 @@ import { ShopsService } from './shops.service';
 export class ShopsController {
   constructor(private readonly shopsService: ShopsService) {}
 
-  @Post()
+  @Post('create')
   async create(@Body() createShopDto: CreateShopDto) {
     return this.shopsService.create(createShopDto);
   }
 
-  @Get()
+  @Get('findall')
   async findAll() {
     return this.shopsService.findAll();
   }
 
-  @Get(':id')
+  @Get('find/id/:id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return this.shopsService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateShopDto: UpdateShopDto,
@@ -39,7 +39,7 @@ export class ShopsController {
     return this.shopsService.update(id, updateShopDto);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   async remove(@Param('id', ParseIntPipe) id: number) {
     return this.shopsService.remove(id);
   }
