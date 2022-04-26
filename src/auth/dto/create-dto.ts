@@ -5,5 +5,5 @@ export class CreateUserDto {
 
   username: string;
 
-  avatar?: string;
+  avatar?: Buffer | null;
 }

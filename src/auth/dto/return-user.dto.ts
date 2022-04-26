@@ -9,7 +9,7 @@ export class ReturnUserDto {
 
   password: string;
 
-  avatar?: string;
+  avatar?: Buffer;
 
   role: Role;
 }

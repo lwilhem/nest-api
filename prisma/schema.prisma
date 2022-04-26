@@ -26,3 +26,11 @@ enum Role {
   RETAILER
   ADMIN
 }
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  price       Float
+  Stock       Int     @default(0)
+  description String? @db.LongText
+}
