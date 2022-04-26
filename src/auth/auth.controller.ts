@@ -7,11 +7,14 @@ import {
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
+import { Role } from '@prisma/client';
 import { HttpExceptionFilter } from '../filters/http-exception.filter';
 import { AuthService } from './auth.service';
+import { Roles } from './decorators/role.decorator';
 import { CreateUserDto } from './dto/create-dto';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { LocalAuthGuard } from './guards/local.guard';
+import { RolesGuard } from './guards/role.guard';
 
 @Controller('auth')
 @UseFilters(HttpExceptionFilter)
@@ -29,8 +32,9 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('profile')
+  @Roles(Role.BUYER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   getProfile(@Request() req: any) {
     return req.user;
   }
