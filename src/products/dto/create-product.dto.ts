@@ -3,4 +3,5 @@ export class CreateProductDto {
   price: number;
   stock: number;
   desciption?: string;
+  shopId: number;
 }

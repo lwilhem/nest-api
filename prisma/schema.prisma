@@ -31,14 +31,21 @@ model Product {
   id          Int     @id @default(autoincrement())
   name        String  @unique
   price       Float
-  Stock       Int     @default(0)
+  stock       Int     @default(0)
   description String? @db.LongText
+  picture     Bytes?
+  shop        Shop    @relation(fields: [shopId], references: [id])
+  shopId      Int
 
   @@map("products")
 }
 
 model Shop {
-  id          Int     @id @default(autoincrement())
-  name        String  @unique
-  description String? @db.LongText
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?   @db.LongText
+  picture     Bytes?
+  Product     Product[]
+
+  @@map("shop")
 }
