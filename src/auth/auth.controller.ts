@@ -7,6 +7,7 @@ import {
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
+import { ApiExcludeController } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { HttpExceptionFilter } from '../filters/http-exception.filter';
 import { AuthService } from './auth.service';
@@ -17,6 +18,7 @@ import { LocalAuthGuard } from './guards/local.guard';
 import { RolesGuard } from './guards/role.guard';
 
 @Controller('auth')
+@ApiExcludeController()
 @UseFilters(HttpExceptionFilter)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

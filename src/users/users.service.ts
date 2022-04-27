@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ReturnUserDto } from '../auth/dto/return-user.dto';
 import { PrismaService } from '../database/database.service';
 
 @Injectable()
@@ -45,5 +46,26 @@ export class UsersService {
         productId: product.id,
       },
     });
+  }
+
+  async deleteFromCart(id: number, numberToDelete: number) {
+    const cart = await this.prisma.cartItem.findUnique({ where: { id } });
+    if (!cart) throw new NotFoundException();
+
+    if (cart.quantity - numberToDelete <= 0)
+      return this.prisma.cartItem.delete({ where: { id } });
+
+    return this.prisma.cartItem.update({
+      where: { id },
+      data: { quantity: cart.quantity - numberToDelete },
+    });
+  }
+
+  async deleteAllCart(userId: number) {
+    return this.prisma.cartItem.deleteMany({ where: { buyerId: userId } });
+  }
+
+  async userById(id: number): Promise<ReturnUserDto> {
+    return this.prisma.user.findUnique({ where: { id } });
   }
 }
