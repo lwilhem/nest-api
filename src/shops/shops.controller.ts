@@ -43,4 +43,9 @@ export class ShopsController {
   async remove(@Param('id', ParseIntPipe) id: number) {
     return this.shopsService.remove(id);
   }
+
+  @Get('/find/:id/products')
+  async findMany(@Param('id', ParseIntPipe) id: number) {
+    return this.shopsService.findShopProducts(id);
+  }
 }

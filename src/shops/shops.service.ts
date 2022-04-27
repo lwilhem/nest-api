@@ -51,4 +51,11 @@ export class ShopsService {
 
     return this.prisma.shop.delete({ where: { id } });
   }
+
+  async findShopProducts(id: number) {
+    const shop = await this.prisma.shop.findUnique({ where: { id } });
+    if (!shop) throw new NotFoundException();
+
+    return this.prisma.product.findMany({ where: { shopId: shop.id } });
+  }
 }

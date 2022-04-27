@@ -18,6 +18,11 @@ model User {
   role     Role   @default(BUYER)
   avatar   Bytes?
 
+  Shop Shop?
+
+  CartItem CartItem[]
+
+  OrderItem OrderItem?
   @@map("users")
 }
 
@@ -34,18 +39,62 @@ model Product {
   stock       Int     @default(0)
   description String? @db.LongText
   picture     Bytes?
-  shop        Shop    @relation(fields: [shopId], references: [id])
-  shopId      Int
+
+  shop   Shop @relation(fields: [shopId], references: [id])
+  shopId Int
+
+  CartItem CartItem[]
 
   @@map("products")
 }
 
 model Shop {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  description String?   @db.LongText
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  description String? @db.LongText
   picture     Bytes?
-  Product     Product[]
 
+  Product Product[]
+
+  retailer   User @relation(fields: [retailerId], references: [id])
+  retailerId Int  @unique
+
+  CartItem CartItem[]
+
+  OrderItem OrderItem[]
   @@map("shop")
+}
+
+model CartItem {
+  id Int @id @default(autoincrement())
+
+  buyer   User @relation(fields: [buyerId], references: [id])
+  buyerId Int
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Int     @default(1)
+
+  retailer   Shop @relation(fields: [retailerId], references: [id])
+  retailerId Int
+
+  OrderItem   OrderItem? @relation(fields: [orderItemId], references: [id])
+  orderItemId Int?
+
+  @@map("carts")
+}
+
+model OrderItem {
+  id Int @id @default(autoincrement())
+
+  buyer   User @relation(fields: [buyerId], references: [id])
+  buyerId Int  @unique
+
+  items CartItem[]
+
+  retailer   Shop @relation(fields: [retailerId], references: [id])
+  retailerId Int
+
+  total Float
+  @@map("orders")
 }
