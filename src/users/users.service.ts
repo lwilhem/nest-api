@@ -68,4 +68,11 @@ export class UsersService {
   async userById(id: number): Promise<ReturnUserDto> {
     return this.prisma.user.findUnique({ where: { id } });
   }
+
+  async setAvatar(id: number, avatar: Buffer) {
+    return this.prisma.user.update({
+      where: { id },
+      data: { avatar },
+    });
+  }
 }
