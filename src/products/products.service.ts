@@ -20,6 +20,12 @@ export class ProductsService {
     return await this.prisma.product.create({ data: { ...createProductDto } });
   }
 
+  async filterByPrice(min: number, max: number) {
+    return await this.prisma.product.findMany({
+      where: { price: { lt: max, gt: min } },
+    });
+  }
+
   async findAllProduct() {
     return this.prisma.product.findMany();
   }

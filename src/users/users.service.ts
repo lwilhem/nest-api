@@ -49,7 +49,7 @@ export class UsersService {
   }
 
   async deleteFromCart(id: number, numberToDelete: number) {
-    const cart = await this.prisma.cartItem.findUnique({ where: { id } });
+    const cart = await this.prisma.cartItem.findFirst({ where: { id } });
     if (!cart) throw new NotFoundException();
 
     if (cart.quantity - numberToDelete <= 0)

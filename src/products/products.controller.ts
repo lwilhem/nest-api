@@ -31,6 +31,11 @@ export class ProductsController {
     return this.productsService.findAllProduct();
   }
 
+  @Get('product/filterby/price')
+  async filter(@Body() { min, max }) {
+    return this.productsService.filterByPrice(+min, +max);
+  }
+
   @Get('find/:id')
   async findById(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.findProductById(id);
