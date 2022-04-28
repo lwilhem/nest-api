@@ -1,8 +1,12 @@
 import {
   Controller,
+  Get,
   Post,
   Request,
+  Response,
+  StreamableFile,
   UploadedFile,
+  UseFilters,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -15,6 +19,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Roles } from '../auth/decorators/role.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { RolesGuard } from '../auth/guards/role.guard';
+import { HttpExceptionFilter } from '../filters/http-exception.filter';
 import { FileService } from './file.service';
 import path = require('path');
 
@@ -47,6 +52,7 @@ export const shopStorage = {
 };
 
 @Controller('file')
+@UseFilters(HttpExceptionFilter)
 @ApiTags('Uploads de Fichiers')
 export class FileController {
   constructor(private fileService: FileService) {}
@@ -62,7 +68,7 @@ export class FileController {
   @Roles(Role.RETAILER, Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('shops/upload')
-  @UseInterceptors(FileInterceptor('avatar', avatarStorage))
+  @UseInterceptors(FileInterceptor('shop_picture', avatarStorage))
   async uploadShop(@UploadedFile() file: any, @Request() req: any) {
     console.log(req.user);
     return of(file);
@@ -70,9 +76,20 @@ export class FileController {
 
   @Roles(Role.RETAILER, Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseInterceptors(FileInterceptor('product_picture', avatarStorage))
   @Post('products/uploads')
   async uploadProducts(@UploadedFile() file: any, @Request() req: any) {
     console.log(req.user);
     return of(file);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('avatar/get')
+  async getFile(
+    @Response({ passthrough: true }) res: any,
+    @Request() req: any,
+  ): Promise<StreamableFile> {
+    console.log(req.user);
+    return this.fileService.findFile(req.user, res);
   }
 }
