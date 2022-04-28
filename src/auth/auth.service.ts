@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../database/database.service';
 import { CreateUserDto } from './dto/create-dto';
@@ -14,7 +15,7 @@ import { ValidateUserDto } from './dto/validate-user.dto';
 export class AuthService {
   constructor(private prisma: PrismaService, private jwt: JwtService) {}
 
-  async registerUser(createUserDto: CreateUserDto): Promise<ReturnUserDto> {
+  async registerUser(createUserDto: CreateUserDto): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: { email: createUserDto.email },
     });

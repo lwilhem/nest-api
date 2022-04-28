@@ -11,18 +11,20 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   username String
-  email    String @unique
+  email    String  @unique
   password String
-  role     Role   @default(BUYER)
-  avatar   Bytes?
+  role     Role    @default(BUYER)
+  avatar   String?
+  path     String?
 
   Shop Shop?
 
   CartItem CartItem[]
 
   OrderItem OrderItem?
+
   @@map("users")
 }
 
@@ -38,7 +40,8 @@ model Product {
   price       Float
   stock       Int     @default(0)
   description String? @db.LongText
-  picture     Bytes?
+  picture     String?
+  path        String?
 
   shop   Shop @relation(fields: [shopId], references: [id])
   shopId Int
@@ -52,7 +55,8 @@ model Shop {
   id          Int     @id @default(autoincrement())
   name        String  @unique
   description String? @db.LongText
-  picture     Bytes?
+  picture     String?
+  path        String?
 
   Product Product[]
 
@@ -96,5 +100,13 @@ model OrderItem {
   retailerId Int
 
   total Float
+
   @@map("orders")
+}
+
+model Images {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  @@map("images")
 }

@@ -13,10 +13,13 @@ async function bootstrap() {
     .addTag('Goodies')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('', app, document, {
+    useGlobalPrefix: false,
+  });
 
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
   app.setGlobalPrefix('api');
-  await app.listen(5001);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

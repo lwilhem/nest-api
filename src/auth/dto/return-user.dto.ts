@@ -11,11 +11,9 @@ export class ReturnUserDto {
   @Exclude()
   password: string;
 
-  avatar?: Buffer;
+  avatar?: string;
+
+  path?: string;
 
   role: Role;
-
-  constructor(partial: Partial<ReturnUserDto>) {
-    Object.assign(this, partial);
-  }
 }

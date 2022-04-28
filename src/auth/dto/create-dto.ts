@@ -5,5 +5,7 @@ export class CreateUserDto {
 
   username: string;
 
-  avatar?: Buffer | null;
+  avatar?: string | null;
+
+  path?: string;
 }

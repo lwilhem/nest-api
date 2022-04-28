@@ -49,7 +49,7 @@ export class UsersService {
   }
 
   async deleteFromCart(id: number, numberToDelete: number) {
-    const cart = await this.prisma.cartItem.findUnique({ where: { id } });
+    const cart = await this.prisma.cartItem.findFirst({ where: { id } });
     if (!cart) throw new NotFoundException();
 
     if (cart.quantity - numberToDelete <= 0)
@@ -67,5 +67,12 @@ export class UsersService {
 
   async userById(id: number): Promise<ReturnUserDto> {
     return this.prisma.user.findUnique({ where: { id } });
+  }
+
+  async setAvatar(id: number, avatar: string, path: string) {
+    return this.prisma.user.update({
+      where: { id },
+      data: { avatar, path },
+    });
   }
 }
