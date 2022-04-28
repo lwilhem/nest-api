@@ -5,11 +5,14 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  UseFilters,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { HttpExceptionFilter } from '../filters/http-exception.filter';
 import { UsersService } from './users.service';
 
 @Controller('users')
+@UseFilters(HttpExceptionFilter)
 @ApiTags('Actions sur les utilisateurs')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

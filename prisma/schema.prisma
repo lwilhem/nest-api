@@ -98,3 +98,10 @@ model OrderItem {
   total Float
   @@map("orders")
 }
+
+model Images {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  @@map("images")
+}
