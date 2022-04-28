@@ -23,6 +23,7 @@ model User {
   CartItem CartItem[]
 
   OrderItem OrderItem?
+
   @@map("users")
 }
 
@@ -96,6 +97,7 @@ model OrderItem {
   retailerId Int
 
   total Float
+
   @@map("orders")
 }
 
