@@ -69,10 +69,10 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  async setAvatar(id: number, avatar: Buffer) {
+  async setAvatar(id: number, avatar: string, path: string) {
     return this.prisma.user.update({
       where: { id },
-      data: { avatar },
+      data: { avatar, path },
     });
   }
 }

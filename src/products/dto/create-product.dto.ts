@@ -4,4 +4,6 @@ export class CreateProductDto {
   stock: number;
   desciption?: string;
   shopId: number;
+  picture: string;
+  path?: string;
 }
