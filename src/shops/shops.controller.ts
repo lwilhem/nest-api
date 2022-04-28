@@ -52,11 +52,15 @@ export class ShopsController {
     @Body() updateShopDto: UpdateShopDto,
     @Request() req: any,
   ) {
+    console.log(req.user);
     return this.shopsService.update(id, updateShopDto, req.user);
   }
 
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete('delete/:id')
-  async remove(@Param('id', ParseIntPipe) id: number) {
+  async remove(@Param('id', ParseIntPipe) id: number, @Request() req: any) {
+    console.log(req.user);
     return this.shopsService.remove(id);
   }
 

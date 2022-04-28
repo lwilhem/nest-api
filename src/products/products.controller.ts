@@ -27,10 +27,11 @@ import { ProductsService } from './products.service';
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
-  @Roles(Role.RETAILER)
+  @Roles(Role.RETAILER, Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('create')
   async create(@Body() data: CreateProductDto, @Request() req: any) {
+    console.log(req.user);
     return this.productsService.createProduct(data, req.user);
   }
 
@@ -49,7 +50,7 @@ export class ProductsController {
     return this.productsService.findProductById(id);
   }
 
-  @Roles(Role.RETAILER)
+  @Roles(Role.RETAILER, Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch('update/:id')
   async update(
@@ -57,13 +58,15 @@ export class ProductsController {
     @Body() data: UpdateProductDto,
     @Request() req: any,
   ) {
+    console.log(req.user);
     return this.productsService.updateProduct(id, data, req.user);
   }
 
-  @Roles(Role.RETAILER)
+  @Roles(Role.RETAILER, Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete('delete/:id')
   async delete(@Param('id', ParseIntPipe) id: number, @Request() req: any) {
+    console.log(req.user);
     return this.productsService.deleteProduct(id, req.user);
   }
 }
