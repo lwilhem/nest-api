@@ -43,8 +43,17 @@ export class ProductsService {
     return product;
   }
 
-  async updateProduct(id: number, updateProductDto: UpdateProductDto) {
+  async updateProduct(
+    id: number,
+    updateProductDto: UpdateProductDto,
+    req: any,
+  ) {
     const product = await this.prisma.product.findUnique({ where: { id } });
+    const shop = await this.prisma.shop.findUnique({
+      where: { id: product.shopId },
+    });
+    if (shop.retailerId != req.id) throw new UnauthorizedException();
+
     if (!product) throw new NotFoundException(`Ce produit n'existe pas`);
 
     return this.prisma.product.update({

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../database/database.service';
 import { CreateShopDto } from './dto/create-shop.dto';
@@ -32,11 +33,14 @@ export class ShopsService {
     throw new NotFoundException('Boutique ?');
   }
 
-  async update(id: number, updateShopDto: UpdateShopDto) {
+  async update(id: number, updateShopDto: UpdateShopDto, req: any) {
+    const user = await this.prisma.user.findUnique({ where: { id: req.id } });
     const shop = await this.prisma.shop.findUnique({
       where: { id },
     });
     if (!shop) throw new NotFoundException();
+    if (user.id != shop.retailerId) throw new UnauthorizedException();
+
     return this.prisma.shop.update({
       where: { id },
       data: { ...updateShopDto },

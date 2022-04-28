@@ -55,8 +55,9 @@ export class ProductsController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() data: UpdateProductDto,
+    @Request() req: any,
   ) {
-    return this.productsService.updateProduct(id, data);
+    return this.productsService.updateProduct(id, data, req.user);
   }
 
   @Roles(Role.RETAILER)
