@@ -5,11 +5,32 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Request,
+  UploadedFile,
   UseFilters,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
+import { diskStorage } from 'multer';
+import { of } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 import { HttpExceptionFilter } from '../filters/http-exception.filter';
 import { UsersService } from './users.service';
+import path = require('path'); // Seems like i can't use path as an ES Module mmmm;
+
+export const storage = {
+  storage: diskStorage({
+    destination: './public/uploads/avatars',
+    filename: (req, file, cb) => {
+      const filename: string =
+        path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
+      const extension: string = path.parse(file.originalname).ext;
+
+      cb(null, `${filename}${extension}`);
+    },
+  }),
+};
 
 @Controller('users')
 @UseFilters(HttpExceptionFilter)
@@ -47,5 +68,11 @@ export class UsersController {
   @Get('user/:id')
   async findUser(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.userById(id);
+  }
+
+  @Post('avatars/upload')
+  @UseInterceptors(FileInterceptor('avatar', storage))
+  uploadFile(@UploadedFile() file, @Request() req: any) {
+    return of(file);
   }
 }
