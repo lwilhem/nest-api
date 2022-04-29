@@ -5,6 +5,7 @@ import { ProductsModule } from './products/products.module';
 import { ShopsModule } from './shops/shops.module';
 import { UsersModule } from './users/users.module';
 import { FileModule } from './file/file.module';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { FileModule } from './file/file.module';
     ShopsModule,
     UsersModule,
     FileModule,
+    StripeModule,
   ],
   controllers: [],
   providers: [],
