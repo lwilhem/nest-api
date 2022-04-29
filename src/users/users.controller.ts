@@ -9,7 +9,12 @@ import {
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
-import { ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { Roles } from '../auth/decorators/role.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
@@ -34,6 +39,11 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: '200', description: 'Le panier est supprimé' })
+  @ApiUnauthorizedResponse({
+    type: '401',
+    description: 'Utilisateur non autorisé',
+  })
   @Delete('cart/product/:id')
   async delete(
     @Param('id', ParseIntPipe) id: number,
@@ -43,12 +53,22 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: '200', description: 'Retourne le panier du client' })
+  @ApiUnauthorizedResponse({
+    type: '401',
+    description: 'Utilisateur non autorisé',
+  })
   @Delete('cart/delete/all')
   async deleteAll(@Request() req: any) {
     return this.usersService.deleteAllCart(req.user);
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiUnauthorizedResponse({
+    type: '401',
+    description: 'Utilisateur non autorisé',
+  })
+  @ApiOkResponse({ type: '200', description: 'Retourne le panier du client' })
   @Post('cart/add/:product')
   async addItemToCart(
     @Request() req: any,
@@ -59,6 +79,11 @@ export class UsersController {
 
   @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard)
+  @ApiUnauthorizedResponse({
+    type: '401',
+    description: 'Utilisateur non autorisé',
+  })
+  @ApiOkResponse({ type: '200', description: 'Retourne le panier du client' })
   @Get('find/id/:id')
   async findUser(@Param('id', ParseIntPipe) id: number, @Request() req: any) {
     console.log(req.user);

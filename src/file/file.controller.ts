@@ -115,4 +115,9 @@ export class FileController {
   ): Promise<StreamableFile> {
     return this.fileService.findShopProfile(id, res);
   }
+
+  @Get('products/:id/get')
+  async getFileProduct(@Response({ passthrough: true }) res: any, id: number) {
+    return this.fileService.findProductFile(id, res);
+  }
 }

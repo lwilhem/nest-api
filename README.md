@@ -15,3 +15,6 @@ Dans le cadre de notre projets Devlab, Nous avons développer une infrastructure
 Voici les principales Fonctionnalitées de l'API :
 
 - Un système d'authentification, utilisant les JWT afin d'authentifier les utilisateurs facilement, et
+  l'authorisation avec la lecture du token coté serveur.
+
+- Manipulation de données pour tout les éléments du
