@@ -34,7 +34,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('cart/product/:id/:howmany')
+  @Delete('cart/product/:id')
   async delete(
     @Param('id', ParseIntPipe) id: number,
     @Param('howmany', ParseIntPipe) howmany: number,
@@ -43,18 +43,18 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('cart/:id')
-  async deleteAll(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.deleteAllCart(id);
+  @Delete('cart/delete/all')
+  async deleteAll(@Request() req: any) {
+    return this.usersService.deleteAllCart(req.user);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post(':id/cart/add/:product')
+  @Post('cart/add/:product')
   async addItemToCart(
-    @Param('id', ParseIntPipe) id: number,
+    @Request() req: any,
     @Param('product', ParseIntPipe) product: number,
   ) {
-    return this.usersService.addToCart(product, id);
+    return this.usersService.addToCart(product, req.user);
   }
 
   @Roles(Role.ADMIN)

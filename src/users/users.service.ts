@@ -18,8 +18,8 @@ export class UsersService {
     return await this.prisma.cartItem.findMany({ where: { retailerId: id } });
   }
 
-  async addToCart(productId: number, userId: number) {
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+  async addToCart(productId: number, req: any) {
+    const user = await this.prisma.user.findUnique({ where: { id: req.id } });
     if (!user) throw new NotFoundException();
 
     const product = await this.prisma.product.findUnique({
@@ -29,7 +29,7 @@ export class UsersService {
 
     const cart = await this.prisma.cartItem.findFirst({
       where: {
-        buyerId: userId,
+        buyerId: req.id,
         retailerId: product.shopId,
         productId: product.id,
       },
@@ -62,8 +62,8 @@ export class UsersService {
     });
   }
 
-  async deleteAllCart(userId: number) {
-    return this.prisma.cartItem.deleteMany({ where: { buyerId: userId } });
+  async deleteAllCart(req: any) {
+    return this.prisma.cartItem.deleteMany({ where: { buyerId: req.id } });
   }
 
   async userById(id: number): Promise<ReturnUserDto> {

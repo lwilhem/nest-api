@@ -27,7 +27,7 @@ export class FileService {
       throw new BadRequestException(e);
     }
 
-    return of(file);
+    return of(file), user;
   }
 
   async findAvatar(req: any, res: any) {

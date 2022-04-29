@@ -101,9 +101,11 @@ export class FileController {
   @Get('avatar/get')
   async getAvatarShop(
     @Response({ passthrough: true }) res: any,
-    id: number,
+    @Request() req: any,
   ): Promise<StreamableFile> {
-    return this.fileService.findProductFile(id, res);
+    console.log(req.user);
+    const test = req.user;
+    return this.fileService.findAvatar(test, res);
   }
 
   @Get('shops/:id/get')
