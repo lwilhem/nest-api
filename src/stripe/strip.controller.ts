@@ -1,9 +1,20 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { HttpExceptionFilter } from '../filters/http-exception.filter';
 import CreateChargeDto from './dto/create-charge.dto';
 import { StripeService } from './stripe.service';
 
 @Controller('charge')
+@ApiTags('Stripe Integration')
+@UseFilters(HttpExceptionFilter)
 export class ChargeController {
   constructor(private readonly stripeService: StripeService) {}
 
