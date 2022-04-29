@@ -57,6 +57,7 @@ export class AuthService {
       email: user.email,
       sub: user.id,
       role: user.role,
+      stripeCustomerId: user.stripeCustomerId,
     };
     return {
       access_token: this.jwt.sign(payload),
