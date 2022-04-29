@@ -27,7 +27,7 @@ export class FileService {
       throw new BadRequestException(e);
     }
 
-    return of(file);
+    return of(file), user;
   }
 
   async findAvatar(req: any, res: any) {
@@ -41,10 +41,11 @@ export class FileService {
     return new StreamableFile(file);
   }
 
-  async findShopProfile(req: any, res: any) {
-    const shop = await this.prisma.shop.findUnique({ where: { id: req.id } });
+  async findShopProfile(id: number, res: any) {
+    const shop = await this.prisma.shop.findUnique({ where: { id } });
     if (!shop) throw new NotFoundException();
     console.log(shop);
+
     const file = createReadStream(join(process.cwd(), `${shop.path}`));
     res.set({
       'Content-Type': 'image/png',
@@ -52,12 +53,13 @@ export class FileService {
     return new StreamableFile(file);
   }
 
-  async findProductFile(req: any, res: any) {
+  async findProductFile(id: number, res: any) {
     const product = await this.prisma.product.findUnique({
-      where: { id: req.id },
+      where: { id },
     });
     if (!product) throw new NotFoundException();
     console.log(product);
+
     const file = createReadStream(join(process.cwd(), `${product.path}`));
     res.set({
       'Content-Type': 'image/png',

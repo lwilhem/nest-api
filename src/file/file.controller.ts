@@ -51,6 +51,20 @@ export const shopStorage = {
   }),
 };
 
+export const productStorage = {
+  storage: diskStorage({
+    destination: './public/uploads/products',
+    filename: (req, file, cb) => {
+      const filename: string =
+        path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
+      const extension: string = path.parse(file.originalname).ext;
+
+      cb(null, `${filename}${extension}`);
+      console.log(req);
+    },
+  }),
+};
+
 @Controller('file')
 @UseFilters(HttpExceptionFilter)
 @ApiTags('Uploads de Fichiers')
@@ -68,7 +82,7 @@ export class FileController {
   @Roles(Role.RETAILER, Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('shops/upload')
-  @UseInterceptors(FileInterceptor('shop_picture', avatarStorage))
+  @UseInterceptors(FileInterceptor('shop_picture', shopStorage))
   async uploadShop(@UploadedFile() file: any, @Request() req: any) {
     console.log(req.user);
     return of(file);
@@ -76,7 +90,7 @@ export class FileController {
 
   @Roles(Role.RETAILER, Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @UseInterceptors(FileInterceptor('product_picture', avatarStorage))
+  @UseInterceptors(FileInterceptor('product_picture', productStorage))
   @Post('products/uploads')
   async uploadProducts(@UploadedFile() file: any, @Request() req: any) {
     console.log(req.user);
@@ -85,11 +99,20 @@ export class FileController {
 
   @UseGuards(JwtAuthGuard)
   @Get('avatar/get')
-  async getFile(
+  async getAvatarShop(
     @Response({ passthrough: true }) res: any,
     @Request() req: any,
   ): Promise<StreamableFile> {
     console.log(req.user);
-    return this.fileService.findAvatar(req.user, res);
+    const test = req.user;
+    return this.fileService.findAvatar(test, res);
+  }
+
+  @Get('shops/:id/get')
+  async getFileShop(
+    @Response({ passthrough: true }) res: any,
+    id: number,
+  ): Promise<StreamableFile> {
+    return this.fileService.findShopProfile(id, res);
   }
 }

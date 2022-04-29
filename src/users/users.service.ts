@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Role } from '@prisma/client';
 import { ReturnUserDto } from '../auth/dto/return-user.dto';
 import { PrismaService } from '../database/database.service';
 
@@ -17,8 +18,8 @@ export class UsersService {
     return await this.prisma.cartItem.findMany({ where: { retailerId: id } });
   }
 
-  async addToCart(productId: number, userId: number) {
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+  async addToCart(productId: number, req: any) {
+    const user = await this.prisma.user.findUnique({ where: { id: req.id } });
     if (!user) throw new NotFoundException();
 
     const product = await this.prisma.product.findUnique({
@@ -28,7 +29,7 @@ export class UsersService {
 
     const cart = await this.prisma.cartItem.findFirst({
       where: {
-        buyerId: userId,
+        buyerId: req.id,
         retailerId: product.shopId,
         productId: product.id,
       },
@@ -61,11 +62,19 @@ export class UsersService {
     });
   }
 
-  async deleteAllCart(userId: number) {
-    return this.prisma.cartItem.deleteMany({ where: { buyerId: userId } });
+  async deleteAllCart(req: any) {
+    return this.prisma.cartItem.deleteMany({ where: { buyerId: req.id } });
   }
 
   async userById(id: number): Promise<ReturnUserDto> {
     return this.prisma.user.findUnique({ where: { id } });
+  }
+
+  async defineRole(id: number, role: Role) {
+    const user = await this.prisma.user.update({
+      where: { id: id },
+      data: { role: role },
+    });
+    return user;
   }
 }
