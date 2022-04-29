@@ -9,7 +9,7 @@ import {
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { Roles } from '../auth/decorators/role.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
@@ -23,13 +23,18 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Get('user/:id/cart')
+  @Get(':id/cart')
+  @ApiOkResponse({ type: '200', description: 'Retourne le panier du client' })
+  @ApiNotFoundResponse({
+    type: '404',
+    description: 'Le panier est inexistsant',
+  })
   async getCart(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.getFullCart(id);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('user/cart/product/:id/:howmany')
+  @Delete('cart/product/:id/:howmany')
   async delete(
     @Param('id', ParseIntPipe) id: number,
     @Param('howmany', ParseIntPipe) howmany: number,
@@ -38,23 +43,23 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('user/cart/:id')
+  @Delete('cart/:id')
   async deleteAll(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.deleteAllCart(id);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('user/:user/cart/add/:product')
+  @Post(':id/cart/add/:product')
   async addItemToCart(
-    @Param('user', ParseIntPipe) user: number,
+    @Param('id', ParseIntPipe) id: number,
     @Param('product', ParseIntPipe) product: number,
   ) {
-    return this.usersService.addToCart(product, user);
+    return this.usersService.addToCart(product, id);
   }
 
   @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard)
-  @Get('user/:id')
+  @Get('find/id/:id')
   async findUser(@Param('id', ParseIntPipe) id: number, @Request() req: any) {
     console.log(req.user);
     return this.usersService.userById(id);
