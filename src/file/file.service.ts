@@ -40,4 +40,28 @@ export class FileService {
     });
     return new StreamableFile(file);
   }
+
+  async findShopProfile(req: any, res: any) {
+    const shop = await this.prisma.shop.findUnique({ where: { id: req.id } });
+    if (!shop) throw new NotFoundException();
+    console.log(shop);
+    const file = createReadStream(join(process.cwd(), `${shop.path}`));
+    res.set({
+      'Content-Type': 'image/png',
+    });
+    return new StreamableFile(file);
+  }
+
+  async findProductFile(req: any, res: any) {
+    const product = await this.prisma.product.findUnique({
+      where: { id: req.id },
+    });
+    if (!product) throw new NotFoundException();
+    console.log(product);
+    const file = createReadStream(join(process.cwd(), `${product.path}`));
+    res.set({
+      'Content-Type': 'image/png',
+    });
+    return new StreamableFile(file);
+  }
 }
