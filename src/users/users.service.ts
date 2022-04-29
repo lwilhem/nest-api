@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Role } from '@prisma/client';
 import { ReturnUserDto } from '../auth/dto/return-user.dto';
 import { PrismaService } from '../database/database.service';
 
@@ -67,5 +68,13 @@ export class UsersService {
 
   async userById(id: number): Promise<ReturnUserDto> {
     return this.prisma.user.findUnique({ where: { id } });
+  }
+
+  async defineRole(id: number, role: Role) {
+    const user = await this.prisma.user.update({
+      where: { id: id },
+      data: { role: role },
+    });
+    return user;
   }
 }
