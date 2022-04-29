@@ -7,24 +7,37 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../database/database.service';
+import { StripeService } from '../stripe/stripe.service';
 import { CreateUserDto } from './dto/create-dto';
 import { ReturnUserDto } from './dto/return-user.dto';
 import { ValidateUserDto } from './dto/validate-user.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService, private jwt: JwtService) {}
+  constructor(
+    private prisma: PrismaService,
+    private jwt: JwtService,
+    private stripe: StripeService,
+  ) {}
 
   async registerUser(createUserDto: CreateUserDto): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: { email: createUserDto.email },
     });
+
+    const stripeId = await this.stripe.createCustomer(
+      createUserDto.username,
+      createUserDto.email,
+    );
+
     if (user) throw new BadRequestException('cette email est déjà pris');
 
     const salt = await bcrypt.genSalt();
     const password = await bcrypt.hash(createUserDto.password, salt);
 
-    return this.prisma.user.create({ data: { ...createUserDto, password } });
+    return this.prisma.user.create({
+      data: { ...createUserDto, password, stripeCustomerId: stripeId.id },
+    });
   }
 
   async validateUser(validateUserDto: ValidateUserDto): Promise<ReturnUserDto> {
