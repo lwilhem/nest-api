@@ -16,4 +16,6 @@ export class ReturnUserDto {
   path?: string;
 
   role: Role;
+
+  stripeCustomerId: string;
 }
