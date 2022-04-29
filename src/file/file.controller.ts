@@ -90,6 +90,6 @@ export class FileController {
     @Request() req: any,
   ): Promise<StreamableFile> {
     console.log(req.user);
-    return this.fileService.findFile(req.user, res);
+    return this.fileService.findAvatar(req.user, res);
   }
 }

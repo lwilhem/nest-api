@@ -30,7 +30,7 @@ export class FileService {
     return of(file);
   }
 
-  async findFile(req: any, res: any) {
+  async findAvatar(req: any, res: any) {
     const user = await this.prisma.user.findUnique({ where: { id: req.id } });
     if (!user) throw new NotFoundException();
     console.log(user);
