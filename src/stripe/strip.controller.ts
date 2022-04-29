@@ -15,7 +15,7 @@ import { StripeService } from './stripe.service';
 @Controller('charge')
 @ApiTags('Stripe Integration')
 @UseFilters(HttpExceptionFilter)
-export class ChargeController {
+export class StripeController {
   constructor(private readonly stripeService: StripeService) {}
 
   @UseGuards(JwtAuthGuard)
