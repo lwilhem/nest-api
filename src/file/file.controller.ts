@@ -99,11 +99,18 @@ export class FileController {
 
   @UseGuards(JwtAuthGuard)
   @Get('avatar/get')
-  async getFile(
+  async getAvatarShop(
     @Response({ passthrough: true }) res: any,
-    @Request() req: any,
+    id: number,
   ): Promise<StreamableFile> {
-    console.log(req.user);
-    return this.fileService.findAvatar(req.user, res);
+    return this.fileService.findProductFile(id, res);
+  }
+
+  @Get('shops/:id/get')
+  async getFileShop(
+    @Response({ passthrough: true }) res: any,
+    id: number,
+  ): Promise<StreamableFile> {
+    return this.fileService.findShopProfile(id, res);
   }
 }
